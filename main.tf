@@ -2,6 +2,13 @@
 # SPDX-License-Identifier: MPL-2.0
 
 terraform {
+  cloud {
+    organization = "kashyaprakshith"
+
+    workspaces {
+      name = "TF-TEST"
+    }
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
