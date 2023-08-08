@@ -2,14 +2,16 @@ provider "virtualbox" {
   version = "1.15.2"  # Replace with the desired provider version
 }
 
-resource "virtualbox_vm" "example_vm" {
-  name   = "my-vm"
-  memory = "512"
-}
+resource "virtualbox_vm" "node" {
+  count = 1
+  name  = "${format("node-%02d", count.index + 1)}"
+  url   = "https://vagrantcloud.com/ubuntu/boxes/xenial64/versions/20180420.0.0/providers/virtualbox.box"
+  image = "./virtualbox.box"
+  cpus  = 2
+  memory = "512 mib"
 
-resource "virtualbox_nic" "example_nic" {
-  vm_id      = virtualbox_vm.example_vm.id
-  nic_type   = "virtio"
-  host_port  = 8080
-  guest_port = 80
+  network_adapter {
+    type = "bridged"
+    host_interface = "en0"
+  }
 }
