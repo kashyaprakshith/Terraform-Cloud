@@ -24,6 +24,7 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: plan-upload
         with:
+          token: ${{ secrets.TFC_API_TOKEN }}
           workspace: ${{ env.TF_WORKSPACE }}
           directory: ${{ env.CONFIG_DIRECTORY }}
           speculative: true
