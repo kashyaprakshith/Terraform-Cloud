@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     virtualbox = {
-      source = "hashicorp/virtualbox"
-      version = "1.15.2"  # Replace with the desired provider version
+      source = "terra-farm/virtualbox"
+      version = "0.2.1"
     }
   }
 }
