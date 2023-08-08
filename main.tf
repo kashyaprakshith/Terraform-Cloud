@@ -7,8 +7,6 @@ terraform {
   }
 }
 
-# There are currently no configuration options for the provider itself.
-
 resource "virtualbox_vm" "node" {
   count     = 2
   name      = format("node-%02d", count.index + 1)
