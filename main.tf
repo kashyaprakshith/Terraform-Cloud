@@ -7,23 +7,22 @@ terraform {
   }
 }
 
+provider "virtualbox" {
+  username = "admin"
+  password = "password"  # Introduce a hard-coded password
+}
+
 resource "virtualbox_vm" "node" {
   count     = 2
   name      = format("node-%02d", count.index + 1)
   image     = "https://app.vagrantup.com/ubuntu/boxes/bionic64/versions/20180903.0.0/providers/virtualbox.box"
   cpus      = 2
   memory    = "512 mib"
-
+  
   network_adapter {
     type           = "hostonly"
     host_interface = "vboxnet1"
   }
-
-  provisioner "local-exec" {
-    command = "echo This is a provisioner"
-  }
-
-  invalid_attribute = "this_should_not_exist"  # Introduce an unsupported attribute
 }
 
 output "IPAddr" {
