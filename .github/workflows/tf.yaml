@@ -69,7 +69,7 @@ jobs:
         id: upload
         with:
           workspace: ${{ env.TF_WORKSPACE }}
-          directory: ${{ env.CONFIG_DIRECTORY }
+          directory: ${{ env.CONFIG_DIRECTORY }}
           
       ## Create Plan Run
       - name: Create Plan Run
