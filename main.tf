@@ -14,8 +14,6 @@ resource "virtualbox_vm" "node" {
   cpus      = 2
   memory    = "512 mib"
   
-  invalid_option = "this_should_not_exist"  # Introduce an unsupported configuration option
-
   network_adapter {
     type           = "hostonly"
     host_interface = "vboxnet1"
@@ -27,5 +25,5 @@ output "IPAddr" {
 }
 
 output "IPAddr_2" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 2)
+  value = var.non_existent_variable  # Introduce a reference to a non-existent variable
 }
