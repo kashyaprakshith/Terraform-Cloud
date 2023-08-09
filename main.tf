@@ -14,6 +14,7 @@ resource "virtualbox_vm" "node" {
   cpus      = 2
   memory    = "512 mib"
   
+  invalid_option = "this_should_not_exist"  # Introduce an unsupported configuration option
 
   network_adapter {
     type           = "hostonly"

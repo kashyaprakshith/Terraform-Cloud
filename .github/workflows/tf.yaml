@@ -21,7 +21,7 @@ permissions: read-all
 
 jobs:
 
-  build-terraform:
+  build-terraform-Cloud:
     permissions:
       security-events: write
     runs-on: ubuntu-latest
