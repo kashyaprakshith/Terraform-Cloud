@@ -11,7 +11,7 @@ resource "virtualbox_vm" "node" {
   count     = 2
   name      = format("node-%02d", count.index + 1)
   image     = "https://app.vagrantup.com/ubuntu/boxes/bionic64/versions/20180903.0.0/providers/virtualbox.box"
-  cpus      = 2
+  cpus      = "2"  # Introduce a string instead of a number
   memory    = "512 mib"
   
   network_adapter {
@@ -21,9 +21,9 @@ resource "virtualbox_vm" "node" {
 }
 
 output "IPAddr" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 1)
+  value = element(virtualbox_vm.node.*.network_adapter[0].ipv4_address, 1)  # Use [0] instead of .0
 }
 
 output "IPAddr_2" {
-  value = var.non_existent_variable  # Introduce a reference to a non-existent variable
+  value = element(virtualbox_vm.node.*.network_adapter[0].ipv4_address, 2)  # Use [0] instead of .0
 }
