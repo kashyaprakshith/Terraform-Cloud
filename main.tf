@@ -1,7 +1,8 @@
 terraform {
+  required_version = ">=0.12"  # Specify the required Terraform version
   required_providers {
     virtualbox = {
-      source = "terra-farm/virtualbox"
+      source  = "terra-farm/virtualbox"
       version = "0.2.2-alpha.1"
     }
   }
@@ -14,7 +15,6 @@ resource "virtualbox_vm" "node" {
   cpus      = 2
   memory    = "512 mib"
   
-
   network_adapter {
     type           = "hostonly"
     host_interface = "vboxnet1"
@@ -27,3 +27,4 @@ output "IPAddr" {
 
 output "IPAddr_2" {
   value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 2)
+}
