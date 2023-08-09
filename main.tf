@@ -1,8 +1,7 @@
 terraform {
-  required_version = ">=0.12"  # Specify the required Terraform version
   required_providers {
     virtualbox = {
-      source  = "terra-farm/virtualbox"
+      source = "terra-farm/virtualbox"
       version = "0.2.2-alpha.1"
     }
   }
@@ -14,11 +13,17 @@ resource "virtualbox_vm" "node" {
   image     = "https://app.vagrantup.com/ubuntu/boxes/bionic64/versions/20180903.0.0/providers/virtualbox.box"
   cpus      = 2
   memory    = "512 mib"
-  
+
   network_adapter {
     type           = "hostonly"
     host_interface = "vboxnet1"
   }
+
+  provisioner "local-exec" {
+    command = "echo This is a provisioner"
+  }
+
+  invalid_attribute = "this_should_not_exist"  # Introduce an unsupported attribute
 }
 
 output "IPAddr" {
