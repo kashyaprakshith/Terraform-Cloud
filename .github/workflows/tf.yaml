@@ -85,12 +85,12 @@ jobs:
         
       ## Create Plan Run
       - name: Create Plan Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: plan-run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
+        id: run
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
-          plan_only: true  
+          plan_only: true
 
   get-plan-output:
     runs-on: ubuntu-latest
