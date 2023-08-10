@@ -39,10 +39,12 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.4
         with:
           plan: ${{ steps.run.outputs.plan_id }}
-        env:
-          RUN_LINK: ${{ steps.run.outputs.run_link }}
+          
+      - name: Get Plan Output
+        uses: hashicorp/tfc-workflows-github/actions/show-run@v1.0.4
+        id: show-run
+        with:
+          run: ${{ steps.reference-run-id.outputs.run_id }}
 
-      - name: Use Run Link
-        run: echo "$RUN_LINK"
  
    
