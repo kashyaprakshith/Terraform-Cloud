@@ -69,36 +69,28 @@ jobs:
           workspace: ${{ env.TF_WORKSPACE }}
           directory: ${{ env.CONFIG_DIRECTORY }}
           
-  create-plan-run:
+  plan-run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      ## Create Plan Run
       - name: Create Plan Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: plan-run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
+        id: run
         with:
           workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-          plan_only: true  
+          configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
+          plan_only: true
 
-  get-plan-output:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      ## Plan Results
       - name: Get Plan Output
-        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.4
         id: plan-output
+        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.4
         with:
           plan: ${{ steps.run.outputs.plan_id }}
-
-     ## Display Run Link
-     - name: Display Run Link
+          
+          
+      - name: Display Run Link
         run: |
           run_id=${{ steps.run.outputs.run_id }}
           workspace=${{ env.TF_WORKSPACE }}
