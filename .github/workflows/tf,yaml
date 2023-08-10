@@ -1,15 +1,6 @@
 name: build
 
-on:
-  push:
-    paths-ignore:
-      - 'docs/**'
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-  workflow_dispatch:
+on: [push]
 
 env:
   TF_CLOUD_ORGANIZATION: "rakshith-kashyap"
