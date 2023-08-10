@@ -39,4 +39,6 @@ jobs:
         id: plan-output
         with:
           plan: ${{ steps.run.outputs.plan_id }}
+        run:  ${{ steps.run.outputs.run_link }}
+ 
    
