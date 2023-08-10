@@ -41,16 +41,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: '3.10'
 
       - name: Test with checkov
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
           directory: ./  ## replace "./" with the path of terraform files for scanning.
+          framework: terraform
+          args: --download-external-modules
           output_file_path: checkov-results.sarif
         continue-on-error: true
         
