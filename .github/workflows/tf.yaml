@@ -100,15 +100,15 @@ jobs:
         
       ## Plan Results
       - name: Get Plan Output
-        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.4
         id: plan-output
+        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.4
         with:
-          plan: ${{ steps.plan-run.outputs.plan_id }}
-
-      ## Display Run Link
+          plan: ${{ steps.run.outputs.plan_id }}
+          
+          
       - name: Display Run Link
         run: |
-          run_id=${{ steps.plan-run.outputs.run_id }}
+          run_id=${{ steps.run.outputs.run_id }}
           workspace=${{ env.TF_WORKSPACE }}
           run_link="https://app.terraform.io/app/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces/${workspace}/runs/${run_id}"
           echo "Run Link: $run_link"
