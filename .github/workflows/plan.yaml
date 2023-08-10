@@ -45,7 +45,12 @@ jobs:
         id: show-run
         with:
           run: ${{ steps.run.outputs.run_id }}
-
-
- 
-   
+        env:
+          TF_WORKSPACE: ${{ env.TF_WORKSPACE }} # Adding the workspace name to the environment
+          
+      - name: Display Run Link
+        run: |
+          run_id=${{ steps.run.outputs.run_id }}
+          workspace=${{ env.TF_WORKSPACE }}
+          run_link="https://app.terraform.io/app/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces/${workspace}/runs/${run_id}"
+          echo "Run Link: $run_link"
