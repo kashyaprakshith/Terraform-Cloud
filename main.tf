@@ -1,30 +1,20 @@
 terraform {
-  required_providers {
-    virtualbox = {
-      source = "terra-farm/virtualbox"
-      version = "0.2.2-alpha.1"
-    }
-  }
+  required_version = ">=0.12"  # Specify the required Terraform version
 }
 
-resource "virtualbox_vm" "node" {
-  count     = 2
-  name      = format("node-%02d", count.index + 1)
-  image     = "https://app.vagrantup.com/ubuntu/boxes/bionic64/versions/20180903.0.0/providers/virtualbox.box"
-  cpus      = 2
-  memory    = "512 mib"
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
   
-
-  network_adapter {
-    type           = "hostonly"
-    host_interface = "vboxnet1"
+  tags = {
+    Name = "ExampleInstance"
   }
 }
 
-output "IPAddr" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 1)
-}
-
-output "IPAddr_2" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 2)
+output "instance_id" {
+  value = aws_instance.example.id
 }
