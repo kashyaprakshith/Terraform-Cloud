@@ -40,7 +40,7 @@ jobs:
         with:
           plan: ${{ steps.run.outputs.plan_id }}
           
-      - name: Get Plan Output
+      - name: Get Plan Output.....
         uses: hashicorp/tfc-workflows-github/actions/show-run@v1.0.4
         id: show-run
         with:
