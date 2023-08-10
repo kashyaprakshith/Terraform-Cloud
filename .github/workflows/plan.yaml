@@ -38,5 +38,5 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.4
         id: plan-output
         with:
-          plan: ${{ steps.run.outputs.plan_id }}
+          plan: ${{ steps.run.outputs.plan_id }}}  
    
