@@ -89,7 +89,6 @@ jobs:
         with:
           plan: ${{ steps.run.outputs.plan_id }}
           
-          
       - name: Display Run Link
         run: |
           run_id=${{ steps.run.outputs.run_id }}
