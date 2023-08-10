@@ -105,3 +105,11 @@ jobs:
         id: plan-output
         with:
           plan: ${{ steps.run.outputs.plan_id }}
+
+     ## Display Run Link
+     - name: Display Run Link
+        run: |
+          run_id=${{ steps.run.outputs.run_id }}
+          workspace=${{ env.TF_WORKSPACE }}
+          run_link="https://app.terraform.io/app/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces/${workspace}/runs/${run_id}"
+          echo "Run Link: $run_link"
