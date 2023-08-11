@@ -25,6 +25,9 @@ jobs:
         with:
           working_directory: ./03_dev  ## replace "./" with the path of terraform files for scanning.
           sarif_file: tfsec.sarif
+      - name: see
+        run:  ls -al
+            
        # continue-on-error: true
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
