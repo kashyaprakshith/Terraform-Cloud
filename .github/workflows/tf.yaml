@@ -1,12 +1,21 @@
 name: build
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  workflow_dispatch:
 
 env:
-  TF_CLOUD_ORGANIZATION: "rakshith-kashyap"
-  TF_API_TOKEN: "${{ secrets.TF_TOKEN }}"
-  TF_WORKSPACE: "rakshith-test"
-  CONFIG_DIRECTORY: "./03_dev"
+  TF_CLOUD_ORGANIZATION: "organization-name"  
+  TF_API_TOKEN: "${{ secret_api_token }}"
+  TF_WORKSPACE: "workspace_name"
+  CONFIG_DIRECTORY: "./"
 
 permissions: read-all
 
@@ -23,12 +32,9 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-sarif-action@v0.1.4
         with:
-          working_directory: ./03_dev  ## replace "./" with the path of terraform files for scanning.
+          working_directory: ./  ## replace "./" with the path of terraform files for scanning.
           sarif_file: tfsec.sarif
-      - name: see
-        run:  ls -al
-            
-       # continue-on-error: true
+      # continue-on-error: true
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -51,7 +57,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: ./03_dev  ## replace "./" with the path of terraform files for scanning.
+          directory: ./  ## replace "./" with the path of terraform files for scanning.
           framework: terraform
           download_external_modules: true
           output_file_path: checkov-results.sarif
@@ -60,17 +66,27 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: checkov-results.sarif
-            
-        
-  Terraform-format:
+
+  ## Run Terraform Format
+  terraform-format:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
+      - name: Init TFLint
+        run: tflint --init
+
+      - name: Run TFLint and generate SARIF
+        run: tflint --recursive --module --format sarif > tflint-results.sarif
+        continue-on-error: true
+
+      - name: Upload TFLint SARIF output to GHAS
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: tflint-results.sari  
       - name: Terraform Format
-        run: terraform fmt -recursive 
-      
+        run: terraform fmt -recursive    
 
   ## Terraform Cloud Plan        
   tfc-plan:
@@ -82,7 +98,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      ## Upload the Configuration to Terraform cloud
+      ## Upload the Configuration to Terraform Cloud
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.4
         id: upload
