@@ -55,6 +55,15 @@ jobs:
         with:
           sarif_file: checkov-results.sarif
 
+Terraform-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+     - name: Terraform Format
+        run: terraform fmt -recursive 
+
   upload-configure-tf-cloud:
     runs-on: ubuntu-latest
     steps:
