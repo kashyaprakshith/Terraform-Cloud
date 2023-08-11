@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
 
 env:
-  TF_CLOUD_ORGANIZATION: "organization-name"  
-  TF_API_TOKEN: "${{ secret_api_token }}"
-  TF_WORKSPACE: "workspace_name"
+  TF_CLOUD_ORGANIZATION: "rakshith-kashyap"
+  TF_API_TOKEN: "${{ secrets.TF_TOKEN }}"
+  TF_WORKSPACE: "rakshith-test"
   CONFIG_DIRECTORY: "./"
 
 permissions: read-all
