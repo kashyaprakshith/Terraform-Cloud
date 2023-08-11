@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
 
 env:
-  TF_CLOUD_ORGANIZATION: "rakshith-kashyap"
-  TF_API_TOKEN: "${{ secrets.TF_TOKEN }}"
-  TF_WORKSPACE: "rakshith-test"
+  TF_CLOUD_ORGANIZATION: "organization-name"  
+  TF_API_TOKEN: "${{ secret_api_token }}"
+  TF_WORKSPACE: "workspace_name"
   CONFIG_DIRECTORY: "./"
 
 permissions: read-all
@@ -67,13 +67,21 @@ jobs:
         with:
           sarif_file: checkov-results.sarif
 
-  ## Run Terraform Format
-  terraform-format:
+  ## Code Quality Check
+  terraform-lint-format:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup TFLint
+        with:
+          tflint_version: v0.47.0
+          
       - name: Init TFLint
         run: tflint --init
 
@@ -84,7 +92,8 @@ jobs:
       - name: Upload TFLint SARIF output to GHAS
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: tflint-results.sari  
+          sarif_file: tflint-results.sarif
+          
       - name: Terraform Format
         run: terraform fmt -recursive    
 
