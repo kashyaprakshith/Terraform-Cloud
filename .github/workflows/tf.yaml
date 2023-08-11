@@ -11,56 +11,61 @@ env:
 permissions: read-all
 
 jobs:
-
-  tfsec-scan:
+  ## tfsec Plan
+  tfsec:
     permissions:
       security-events: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      - name: Clone repo
-        uses: actions/checkout@master
-        
       - name: tfsec
         uses: aquasecurity/tfsec-sarif-action@v0.1.4
         with:
           sarif_file: tfsec.sarif
-        
+       # continue-on-error: true
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: tfsec.sarif
 
-  checkov-scan:
+  ## Checkov Scan        
+  checkov:
     permissions:
       security-events: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      - uses: actions/setup-python@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
       - name: Test with checkov
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
           directory: ./  ## replace "./" with the path of terraform files for scanning.
           framework: terraform
-          args: --download-external-modules
+          download_external_modules: true
           output_file_path: checkov-results.sarif
         continue-on-error: true
-        
       - name: Upload SARIF results
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: checkov-results.sarif
+          
+       # Run Terraform Format
+      - name: Terraform Format
+        run: terraform fmt -recursive    
 
-  upload-configure-tf-cloud:
+  ## Terraform Cloud Plan        
+  tfc-plan:
+    permissions:
+      security-events: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -73,14 +78,10 @@ jobs:
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           directory: ${{ env.CONFIG_DIRECTORY }}
-          
-  plan-run:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Create Plan Run
+          speculative: true
+
+      ## Create Run
+      - name: Create Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
         id: run
         with:
@@ -88,15 +89,9 @@ jobs:
           configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
           plan_only: true
 
+      ## Plan Results
       - name: Get Plan Output
-        id: plan-output
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.4
+        id: plan-output
         with:
           plan: ${{ steps.run.outputs.plan_id }}
-          
-      - name: Display Run Link
-        run: |
-          run_id=${{ steps.run.outputs.run_id }}
-          workspace=${{ env.TF_WORKSPACE }}
-          run_link="https://app.terraform.io/app/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces/${workspace}/runs/${run_id}"
-          echo "Run Link: $run_link"
