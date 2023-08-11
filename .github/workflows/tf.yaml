@@ -6,7 +6,7 @@ env:
   TF_CLOUD_ORGANIZATION: "rakshith-kashyap"
   TF_API_TOKEN: "${{ secrets.TF_TOKEN }}"
   TF_WORKSPACE: "rakshith-test"
-  CONFIG_DIRECTORY: "./"
+  CONFIG_DIRECTORY: "./03_dev"
 
 permissions: read-all
 
@@ -23,7 +23,7 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-sarif-action@v0.1.4
         with:
-          working_directory: ./  ## replace "./" with the path of terraform files for scanning.
+          working_directory: ./03_dev  ## replace "./" with the path of terraform files for scanning.
           sarif_file: tfsec.sarif
        # continue-on-error: true
       - name: Upload SARIF file
@@ -48,7 +48,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: ./  ## replace "./" with the path of terraform files for scanning.
+          directory: ./03_dev  ## replace "./" with the path of terraform files for scanning.
           framework: terraform
           download_external_modules: true
           output_file_path: checkov-results.sarif
