@@ -1,6 +1,6 @@
 terraform {
   cloud {
-    organization = "Cofinity-X"
+                                                           organization = "Cofinity-X"
 
     workspaces {
       name = "tfc-cofinity-x-cloud-infra-dev"
