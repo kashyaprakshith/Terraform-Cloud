@@ -56,10 +56,17 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: checkov-results.sarif
-          
-       # Run Terraform Format
+            
+        
+  Terraform-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
       - name: Terraform Format
-        run: terraform fmt -recursive    
+        run: terraform fmt -recursive 
+      
 
   ## Terraform Cloud Plan        
   tfc-plan:
