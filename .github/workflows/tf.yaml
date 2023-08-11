@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
 
 env:
-  TF_CLOUD_ORGANIZATION: "rakshith-kashyap"
-  TF_API_TOKEN: "${{ secrets.TF_TOKEN }}"
-  TF_WORKSPACE: "rakshith-test"
+  TF_CLOUD_ORGANIZATION: "organization-name"  
+  TF_API_TOKEN: "${{ secret_api_token }}"
+  TF_WORKSPACE: "workspace_name"
   CONFIG_DIRECTORY: "./"
 
 permissions: read-all
@@ -32,7 +32,7 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-sarif-action@v0.1.4
         with:
-          working_directory: ./03_dev  ## replace "./" with the path of terraform files for scanning.
+          working_directory: ./  ## replace "./" with the path of terraform files for scanning.
           sarif_file: tfsec.sarif
       # continue-on-error: true
       - name: Upload SARIF file
@@ -57,7 +57,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: ./03_dev  ## replace "./" with the path of terraform files for scanning.
+          directory: ./  ## replace "./" with the path of terraform files for scanning.
           framework: terraform
           download_external_modules: true
           output_file_path: checkov-results.sarif
@@ -67,8 +67,9 @@ jobs:
         with:
           sarif_file: checkov-results.sarif
 
-  ## Code Quality Check
-  terraform-lint-format:
+  ## Code Quality Checkt
+  ## terraform lint
+  terraform-lint:
     permissions:
       security-events: write
       contents: read
@@ -89,14 +90,19 @@ jobs:
         run: tflint --init
 
       - name: Run TFLint and generate SARIF
-        run: tflint --recursive --module --format sarif ./03_dev > tflint-results.sarif
+        run: tflint --recursive --module --format sarif > tflint-results.sarif
         continue-on-error: true
 
       - name: Upload TFLint SARIF output to GHAS
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: tflint-results.sarif
-
+  ## terraform format
+  terraform-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Terraform Format
         run: terraform fmt -recursive    
 
