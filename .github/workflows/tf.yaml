@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
 
 env:
-  TF_CLOUD_ORGANIZATION: "rakshith-kashyap"
-  TF_API_TOKEN: "${{ secrets.TF_TOKEN }}"
-  TF_WORKSPACE: "rakshith-test"
+  TF_CLOUD_ORGANIZATION: "organization-name"  
+  TF_API_TOKEN: "${{ secret_api_token }}"
+  TF_WORKSPACE: "workspace_name"
   CONFIG_DIRECTORY: "./"
 
 permissions: read-all
@@ -69,6 +69,9 @@ jobs:
 
   ## Code Quality Check
   terraform-lint-format:
+    permissions:
+      security-events: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/cache@v3
@@ -93,7 +96,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: tflint-results.sarif
-          
+
       - name: Terraform Format
         run: terraform fmt -recursive    
 
