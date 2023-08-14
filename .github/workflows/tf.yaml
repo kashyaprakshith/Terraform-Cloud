@@ -51,7 +51,8 @@ jobs:
       - name: Validate Terraform code
         run: terraform validate
         continue-on-error: false
-
+        
+  ## tfsec Scan
   tfsec:
     permissions:
       security-events: write
@@ -63,13 +64,15 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-sarif-action@v0.1.4
         with:
-          working_directory: ./dev  ## replace "./" with the path of terraform files for scanning.
+          working_directory: ./  ## replace "./" with the path of terraform files for scanning.
           sarif_file: tfsec.sarif
+      # continue-on-error: true
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: tfsec.sarif
 
+  ## Checkov Scan        
   checkov:
     permissions:
       security-events: write
@@ -86,7 +89,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: ./dev  ## replace "./" with the path of terraform files for scanning.
+          directory: ./  ## replace "./" with the path of terraform files for scanning.
           framework: terraform
           download_external_modules: true
           output_file_path: checkov-results.sarif
@@ -96,6 +99,8 @@ jobs:
         with:
           sarif_file: checkov-results.sarif
 
+  ## Code Quality Check
+  ## Terraform lint
   terraform-lint:
     permissions:
       security-events: write
@@ -117,7 +122,7 @@ jobs:
         run: tflint --init
 
       - name: Run TFLint and generate SARIF
-        run: tflint --recursive --module --format sarif  > tflint-results.sarif
+        run: tflint --recursive --module --format sarif . > tflint-results.sarif
         continue-on-error: true
 
       - name: Upload TFLint SARIF output to GHAS
@@ -125,6 +130,7 @@ jobs:
         with:
           sarif_file: tflint-results.sarif
 
+  ## Run Terraform Format
   terraform-format:
     runs-on: ubuntu-latest
     steps:
@@ -133,6 +139,7 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -recursive   
 
+  ## Terraform Cloud Plan        
   tfc-plan:
     permissions:
       security-events: write
